@@ -1,0 +1,19 @@
+{
+  "name": "brainbase",
+  "description": "Official Brainbase plugins for building and operating managed agents.",
+  "owner": {
+    "name": "Brainbase Labs"
+  },
+  "plugins": [
+    {
+      "name": "brainbase-mcp",
+      "description": "Build, test, deploy, and monitor Brainbase managed agents safely.",
+      "author": {
+        "name": "Brainbase Labs"
+      },
+      "category": "development",
+      "source": ".",
+      "homepage": "https://docs.brainbaselabs.com"
+    }
+  ]
+}
