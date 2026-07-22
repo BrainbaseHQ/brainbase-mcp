@@ -192,11 +192,12 @@ The packaged MCP descriptor contains only:
 https://api.brainbaselabs.com/mcp
 ```
 
-This is the MCP resource endpoint, not the OAuth issuer. External Codex and
-Claude Code installs complete native OAuth through
-`https://app.brainbaselabs.com` with `mcp:all`. This grants user-wide Brainbase
-MCP access bounded by ordinary Brainbase ACLs. Resource-scoped PATs and direct
-`bb_live_` task credentials must not be used as user-wide MCP credentials.
+This is the MCP resource endpoint, not the OAuth issuer. Compatible external
+MCP clients complete OAuth through `https://app.brainbaselabs.com` with
+`mcp:all`; the packaged Codex and Claude Code integrations use this same flow.
+This grants user-wide Brainbase MCP access bounded by ordinary Brainbase ACLs.
+Resource-scoped PATs and direct `bb_live_` task credentials must not be used as
+user-wide MCP credentials.
 
 Never request, display, copy, log, or store raw secrets, OAuth tokens, PATs,
 runtime keys, headers, or environment values. Guide the user to Brainbase's
