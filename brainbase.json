@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "name": "brainbase/brainbase-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Brainbase MCP connection and revision-safe managed-agent guidance.",
   "sourceHarness": "codex",
   "createdAt": "2026-07-17T00:00:00.000Z",
@@ -10,7 +10,7 @@
       "type": "skill",
       "slug": "brainbase-mcp",
       "path": "skills/brainbase-mcp",
-      "checksum": "4dd9b921faf81b7395cf90cbb3c28726f1102e6179317a155b888e4eeba5e18b",
+      "checksum": "9eadbb3df36eaf563cbb985114e66f41447e6a2e876b6de0d166ebca994cea12",
       "scope": "global",
       "description": "Build and operate Brainbase managed agents safely."
     },
