@@ -1,0 +1,13 @@
+interface:
+  display_name: "Brainbase MCP"
+  short_description: "Build and operate managed agents safely"
+  default_prompt: "Use $brainbase-mcp to build and test a Brainbase managed agent safely."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "brainbase"
+      description: "Brainbase managed-agent MCP server"
+      transport: "streamable_http"
+      url: "https://api.brainbaselabs.com/mcp"
+policy:
+  allow_implicit_invocation: true
