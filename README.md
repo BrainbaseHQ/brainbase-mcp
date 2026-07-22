@@ -1,22 +1,23 @@
 # Brainbase MCP
 
-The official Brainbase MCP plugin for Codex and Claude Code.
+The official Brainbase MCP for any compatible MCP client.
 
-It connects your coding agent to the Brainbase managed-agent control plane and
-loads a companion skill for building, testing, deploying, and operating agents
-safely.
+Any compatible MCP client can connect to Brainbase over Streamable HTTP and
+OAuth. This repository also includes optional Codex and Claude Code packages
+that bundle the same MCP connection with a companion operating skill.
 
 ## What it provides
 
 - A credential-free remote MCP connection to
   `https://api.brainbaselabs.com/mcp`
-- Native Brainbase OAuth through Codex or Claude Code
-- A maintained skill covering agents, instructions, playbooks, registry
-  skills, MCP servers, evals, tasks, orchestrations, and schedules
+- Client-managed Brainbase OAuth with no pasted API keys or bearer tokens
+- Agent, component, eval, task, orchestration, schedule, template, and skill
+  tools for any compatible MCP client
+- An optional maintained operating skill for clients that support packaged
+  skills
 - Revision-safe targeted writes, idempotent creates, destructive confirmation,
   and explicit billable-run guidance
-- A Brainbase package manifest for optional publication to the Brainbase
-  template registry
+- Optional Codex, Claude Code, and Brainbase package manifests
 
 Workflows are intentionally excluded.
 
@@ -42,10 +43,37 @@ destructive.
 ## Requirements
 
 - A Brainbase account
-- A current version of Codex or Claude Code with plugin and remote MCP support
+- An MCP client with remote Streamable HTTP and OAuth support
 - Permission to open `app.brainbaselabs.com` to complete OAuth
 
-## Install in Codex
+## Connect from any MCP client
+
+Configure a remote HTTP MCP server named `brainbase` with this URL:
+
+```text
+https://api.brainbaselabs.com/mcp
+```
+
+For clients that accept an `mcpServers` object, adapt this credential-free
+configuration:
+
+```json
+{
+  "mcpServers": {
+    "brainbase": {
+      "type": "http",
+      "url": "https://api.brainbaselabs.com/mcp"
+    }
+  }
+}
+```
+
+Do not add authorization headers or paste tokens into the configuration.
+Complete Brainbase OAuth through the client when prompted.
+
+## Optional: install the Codex package
+
+The Codex package installs the MCP connection and companion operating skill:
 
 ```sh
 codex plugin marketplace add BrainbaseHQ/brainbase-mcp --ref main
@@ -67,7 +95,9 @@ codex plugin remove brainbase-mcp@brainbase
 codex plugin marketplace remove brainbase
 ```
 
-## Install in Claude Code
+## Optional: install the Claude Code package
+
+The Claude Code package installs the same MCP connection and operating skill:
 
 ```sh
 claude plugin marketplace add --scope user BrainbaseHQ/brainbase-mcp
@@ -96,7 +126,8 @@ have been exposed, report it through the private process in
 4. Read the resource back and verify the result.
 5. Test behavior with a task or eval before deploying a schedule.
 
-The companion skill applies this workflow automatically when relevant.
+The companion skill applies this workflow automatically when installed.
+Otherwise, follow the same sequence directly with the MCP tools.
 
 ## Capability boundaries
 
@@ -161,8 +192,9 @@ When the skill or MCP component changes, regenerate the corresponding
 by GitHub Actions.
 
 This repository is the canonical source for the Brainbase MCP distribution.
-The npm package is intentionally disabled; Codex and Claude Code install from
-this Git repository.
+Any compatible MCP client can connect directly to the remote endpoint. The npm
+package is intentionally disabled; optional Codex and Claude Code packages
+install from this Git repository.
 
 ## Support
 

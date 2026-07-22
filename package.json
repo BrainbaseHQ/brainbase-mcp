@@ -1,8 +1,8 @@
 {
   "name": "@brainbase-labs/brainbase-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
-  "description": "Official Brainbase MCP plugin and skill for Codex and Claude Code.",
+  "description": "Official Brainbase remote MCP connection with optional client packages and operating skill.",
   "license": "MIT",
   "homepage": "https://docs.brainbaselabs.com",
   "repository": {

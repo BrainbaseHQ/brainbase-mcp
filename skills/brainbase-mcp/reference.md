@@ -499,7 +499,7 @@ the fetched docs. Do not turn a capability boundary into a dead end.
 
 ## Credential and capability rules
 
-- The plugin descriptor is credential-free and relies on native OAuth.
+- The packaged MCP descriptor is credential-free and relies on native OAuth.
 - The MCP resource endpoint is `https://api.brainbaselabs.com/mcp`.
 - The OAuth issuer and authorization server are
   `https://app.brainbaselabs.com`; do not substitute the MCP or control-plane
