@@ -222,7 +222,7 @@ for (const payload of [
 
 assert(
   openAiSubmission.$schema ===
-    "https://developers.openai.com/plugins/schemas/chatgpt-app-submission.v1.json",
+    "https://developers.openai.com/apps-sdk/schemas/chatgpt-app-submission.v1.json",
   "OpenAI submission schema URL mismatch",
 );
 assert(
