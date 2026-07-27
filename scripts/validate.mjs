@@ -6,6 +6,10 @@ import { fileURLToPath } from "node:url";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const REPOSITORY = "https://github.com/BrainbaseHQ/brainbase-mcp";
 const MCP_URL = "https://api.brainbaselabs.com/mcp";
+const WEBSITE_URL = "https://brainbaselabs.com";
+const SUPPORT_URL = "https://github.com/BrainbaseHQ/brainbase-mcp/issues";
+const PRIVACY_URL = "https://brainbaselabs.com/privacy";
+const TERMS_URL = "https://brainbaselabs.com/terms";
 
 function assert(condition, message) {
   if (!condition) {
@@ -21,6 +25,17 @@ function readJson(relativePath) {
 
 function sha256(value) {
   return crypto.createHash("sha256").update(value).digest("hex");
+}
+
+function pngDimensions(relativePath) {
+  const content = fs.readFileSync(path.join(ROOT, relativePath));
+  const signature = content.subarray(0, 8).toString("hex");
+  assert(signature === "89504e470d0a1a0a", `${relativePath} is not a PNG`);
+  assert(content.length >= 24, `${relativePath} is an invalid PNG`);
+  return {
+    width: content.readUInt32BE(16),
+    height: content.readUInt32BE(20),
+  };
 }
 
 function dirChecksum(dirPath) {
@@ -71,6 +86,10 @@ const requiredFiles = [
   "skills/brainbase-mcp/SKILL.md",
   "skills/brainbase-mcp/reference.md",
   "skills/brainbase-mcp/agents/openai.yaml",
+  "chatgpt-app-submission.json",
+  "submission/README.md",
+  "submission/directory-icon.png",
+  "submission/composer-icon.png",
   "README.md",
   "SECURITY.md",
   "LICENSE",
@@ -87,6 +106,7 @@ const claudeMarketplace = readJson(".claude-plugin/marketplace.json");
 const brainbaseManifest = readJson("brainbase.json");
 const sharedMcp = readJson(".mcp.json");
 const componentMcp = readJson("components/mcps/brainbase/mcp.json");
+const openAiSubmission = readJson("chatgpt-app-submission.json");
 const version = packageJson.version;
 
 assert(packageJson.private === true, "npm publication must remain disabled");
@@ -104,6 +124,57 @@ for (const manifest of [codexPlugin, claudePlugin]) {
 }
 assert(codexPlugin.skills === "./skills/", "Codex skill path mismatch");
 assert(codexPlugin.mcpServers === "./.mcp.json", "Codex MCP path mismatch");
+assert(
+  codexPlugin.interface?.displayName === "Brainbase MCP" &&
+    codexPlugin.interface.displayName.length <= 30,
+  "Codex display name is invalid",
+);
+assert(
+  codexPlugin.interface?.shortDescription === "Build and operate AI agents" &&
+    codexPlugin.interface.shortDescription.length <= 30,
+  "Codex short description is invalid",
+);
+assert(
+  typeof codexPlugin.interface?.longDescription === "string" &&
+    codexPlugin.interface.longDescription.length > 0 &&
+    codexPlugin.interface.longDescription.length <= 4000,
+  "Codex long description is invalid",
+);
+assert(
+  codexPlugin.interface?.developerName === "Brainbase Labs" &&
+    codexPlugin.interface.developerName.length <= 80,
+  "Codex developer name is invalid",
+);
+for (const [field, expected] of [
+  ["websiteURL", WEBSITE_URL],
+  ["supportURL", SUPPORT_URL],
+  ["privacyPolicyURL", PRIVACY_URL],
+  ["termsOfServiceURL", TERMS_URL],
+]) {
+  assert(
+    codexPlugin.interface?.[field] === expected,
+    `Codex ${field} is missing or stale`,
+  );
+}
+assert(
+  codexPlugin.interface?.logo === "./submission/directory-icon.png",
+  "Codex directory icon path mismatch",
+);
+assert(
+  codexPlugin.interface?.composerIcon === "./submission/composer-icon.png",
+  "Codex composer icon path mismatch",
+);
+assert(
+  Array.isArray(codexPlugin.interface?.defaultPrompt) &&
+    codexPlugin.interface.defaultPrompt.length <= 3 &&
+    codexPlugin.interface.defaultPrompt.every(
+      (prompt) =>
+        typeof prompt === "string" &&
+        prompt.trim().length > 0 &&
+        prompt.length <= 128,
+    ),
+  "Codex starter prompts are invalid",
+);
 
 assert(
   codexMarketplace.plugins[0].source.path === ".",
@@ -147,6 +218,194 @@ for (const payload of [
   for (const forbidden of ["headers", "env", "command"]) {
     assert(!(forbidden in payload), `MCP payload contains ${forbidden}`);
   }
+}
+
+assert(
+  openAiSubmission.$schema ===
+    "https://developers.openai.com/plugins/schemas/chatgpt-app-submission.v1.json",
+  "OpenAI submission schema URL mismatch",
+);
+assert(
+  openAiSubmission.schema_version === 1,
+  "OpenAI submission schema version mismatch",
+);
+assert(
+  openAiSubmission.app_info?.display_name === "Brainbase MCP",
+  "OpenAI submission display name mismatch",
+);
+assert(
+  openAiSubmission.app_info?.display_name ===
+    codexPlugin.interface.displayName &&
+    openAiSubmission.app_info?.subtitle ===
+      codexPlugin.interface.shortDescription &&
+    openAiSubmission.app_info?.description ===
+      codexPlugin.interface.longDescription,
+  "OpenAI submission listing copy does not match the Codex manifest",
+);
+assert(
+  openAiSubmission.app_info?.category === "DEVELOPER_TOOLS",
+  "OpenAI submission category mismatch",
+);
+const submissionTools = openAiSubmission.tools ?? {};
+assert(
+  Object.keys(submissionTools).length === 46,
+  "OpenAI submission must cover all 46 MCP tools",
+);
+const expectedReadOnlyTools = new Set([
+  "orgs_list",
+  "teams_list",
+  "agents_list",
+  "agents_get",
+  "agents_get_revision",
+  "templates_search",
+  "templates_get",
+  "skills_search",
+  "skills_get",
+  "mcp_servers_list",
+  "playbooks_list",
+  "evals_list",
+  "evals_get",
+  "evals_results",
+  "orchestrations_list",
+  "orchestrations_get",
+  "tasks_list",
+  "tasks_get",
+  "tasks_events",
+]);
+const expectedOpenWorldTools = new Set([
+  "templates_search",
+  "templates_get",
+  "skills_search",
+  "skills_get",
+  "evals_run",
+  "schedules_test",
+  "tasks_create",
+  "tasks_followup",
+]);
+const expectedDestructiveTools = new Set([
+  "agents_update",
+  "instructions_update",
+  "agents_delete",
+  "skills_attach",
+  "skills_detach",
+  "mcp_servers_upsert",
+  "mcp_servers_remove",
+  "playbooks_upsert",
+  "playbooks_archive",
+  "evals_update",
+  "evals_delete",
+  "evals_run",
+  "orchestrations_update",
+  "orchestrations_delete",
+  "orchestration_members_remove",
+  "orchestration_edges_upsert",
+  "orchestration_edges_remove",
+  "schedules_upsert",
+  "schedules_remove",
+  "schedules_test",
+  "tasks_create",
+  "tasks_followup",
+  "tasks_interrupt",
+]);
+for (const [name, tool] of Object.entries(submissionTools)) {
+  for (const [hint, expectedTools] of [
+    ["readOnlyHint", expectedReadOnlyTools],
+    ["openWorldHint", expectedOpenWorldTools],
+    ["destructiveHint", expectedDestructiveTools],
+  ]) {
+    assert(
+      tool.annotations?.[hint] === expectedTools.has(name),
+      `OpenAI submission ${name} has a stale ${hint}`,
+    );
+  }
+  for (const hint of [
+    "readOnlyHint",
+    "openWorldHint",
+    "destructiveHint",
+  ]) {
+    assert(
+      typeof tool.annotations?.[hint] === "boolean",
+      `OpenAI submission ${name} is missing ${hint}`,
+    );
+  }
+  for (const justification of [
+    "read_only_justification",
+    "open_world_justification",
+    "destructive_justification",
+  ]) {
+    assert(
+      typeof tool.justifications?.[justification] === "string" &&
+        tool.justifications[justification].length > 0,
+      `OpenAI submission ${name} is missing ${justification}`,
+    );
+  }
+}
+assert(
+  openAiSubmission.test_cases?.length === 5,
+  "OpenAI submission must contain exactly five positive tests",
+);
+assert(
+  openAiSubmission.negative_test_cases?.length === 3,
+  "OpenAI submission must contain exactly three negative tests",
+);
+const reviewerFixture = fs.readFileSync(
+  path.join(ROOT, "submission/README.md"),
+  "utf8",
+);
+for (const fixtureName of [
+  "Support Triage",
+  "Instruction Update Test Agent",
+  "Evaluation Test Agent",
+  "Schedule Test Agent",
+]) {
+  assert(
+    reviewerFixture.includes(`\`${fixtureName}\``),
+    `Reviewer fixture is missing ${fixtureName}`,
+  );
+}
+assert(
+  openAiSubmission.test_cases[1].user_prompt.includes(
+    "Directory Creation Test Agent",
+  ) &&
+    openAiSubmission.test_cases[1].user_prompt.includes("idempotency key") &&
+    openAiSubmission.test_cases[2].user_prompt.includes(
+      "Instruction Update Test Agent",
+    ) &&
+    openAiSubmission.test_cases[3].user_prompt.includes(
+      "Evaluation Test Agent",
+    ) &&
+    openAiSubmission.test_cases[4].user_prompt.includes("Schedule Test Agent"),
+  "OpenAI positive tests must use their independent reviewer fixtures",
+);
+for (const testCase of openAiSubmission.test_cases) {
+  const tools = testCase.tools_triggered
+    .split(",")
+    .map((name) => name.trim())
+    .filter(Boolean);
+  assert(tools.length > 0, "OpenAI positive test must trigger a tool");
+  for (const name of tools) {
+    assert(
+      Object.hasOwn(submissionTools, name),
+      `OpenAI positive test references unknown tool: ${name}`,
+    );
+  }
+}
+for (const testCase of openAiSubmission.negative_test_cases) {
+  assert(
+    testCase.tools_triggered === null,
+    "OpenAI negative tests must not trigger MCP tools",
+  );
+}
+for (const [relativePath, minimum] of [
+  ["submission/directory-icon.png", 256],
+  ["submission/composer-icon.png", 48],
+]) {
+  const { width, height } = pngDimensions(relativePath);
+  assert(width === height, `${relativePath} must be square`);
+  assert(
+    width >= minimum,
+    `${relativePath} must be at least ${minimum} x ${minimum}`,
+  );
 }
 
 const skill = fs.readFileSync(
