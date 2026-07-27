@@ -20,16 +20,18 @@
   "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Brainbase MCP",
-    "shortDescription": "Build and operate Brainbase managed agents",
-    "longDescription": "Create, update, test, deploy, and monitor Brainbase agents and orchestrations with targeted revision-safe writes and explicit capability boundaries.",
+    "shortDescription": "Build and operate AI agents",
+    "longDescription": "Brainbase MCP lets users create, inspect, update, test, deploy, and monitor managed AI agents from ChatGPT and Codex. It supports revision-safe agent changes, registry skills and MCP server configuration, evaluations, orchestrations, schedules, and task runs, with explicit confirmation for destructive actions and OAuth-based access to the user's Brainbase workspace.",
     "developerName": "Brainbase Labs",
     "category": "Developer Tools",
     "capabilities": [
-      "Interactive",
-      "Read",
-      "Write"
+      "Create and update managed agents",
+      "Run tasks and evaluations",
+      "Build orchestrations and schedules"
     ],
     "websiteURL": "https://brainbaselabs.com",
+    "supportURL": "https://github.com/BrainbaseHQ/brainbase-mcp/issues",
+    "privacyPolicyURL": "https://brainbaselabs.com/privacy",
     "termsOfServiceURL": "https://brainbaselabs.com/terms",
     "defaultPrompt": [
       "Build and test a Brainbase agent",
@@ -37,6 +39,7 @@
       "Create a scheduled orchestration safely"
     ],
     "brandColor": "#6D5EF5",
-    "screenshots": []
+    "composerIcon": "./submission/composer-icon.png",
+    "logo": "./submission/directory-icon.png"
   }
 }
