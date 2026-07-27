@@ -116,9 +116,10 @@ responses, revision-safe mutations, and explicit billable/destructive
 semantics. The package validator checks the final listing limits, branding
 assets, tool annotations, imported tests, and credential-free source tree.
 
-Before uploading, regenerate `../chatgpt-app-submission.json` with the official
-OpenAI Developers plugin's `chatgpt-app-submission` skill and confirm the
-generated file is unchanged. Then run `node scripts/validate.mjs`.
+The submission payload has been reviewed against the official OpenAI
+Developers plugin's `chatgpt-app-submission` skill and uses its Apps SDK schema
+contract. Re-run the skill after any MCP tool or listing change, then run
+`node scripts/validate.mjs` before uploading.
 
 ## Remaining external steps
 
