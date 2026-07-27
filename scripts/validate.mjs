@@ -364,21 +364,21 @@ for (const fixtureName of [
   );
 }
 assert(
-  openAiSubmission.test_cases[1].user_prompt.includes(
+  openAiSubmission.test_cases[1]?.user_prompt?.includes(
     "Directory Creation Test Agent",
   ) &&
-    openAiSubmission.test_cases[1].user_prompt.includes("idempotency key") &&
-    openAiSubmission.test_cases[2].user_prompt.includes(
+    openAiSubmission.test_cases[1]?.user_prompt?.includes("idempotency key") &&
+    openAiSubmission.test_cases[2]?.user_prompt?.includes(
       "Instruction Update Test Agent",
     ) &&
-    openAiSubmission.test_cases[3].user_prompt.includes(
+    openAiSubmission.test_cases[3]?.user_prompt?.includes(
       "Evaluation Test Agent",
     ) &&
-    openAiSubmission.test_cases[4].user_prompt.includes("Schedule Test Agent"),
+    openAiSubmission.test_cases[4]?.user_prompt?.includes("Schedule Test Agent"),
   "OpenAI positive tests must use their independent reviewer fixtures",
 );
 for (const testCase of openAiSubmission.test_cases) {
-  const tools = testCase.tools_triggered
+  const tools = (testCase.tools_triggered ?? "")
     .split(",")
     .map((name) => name.trim())
     .filter(Boolean);
