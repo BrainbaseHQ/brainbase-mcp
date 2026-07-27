@@ -1,0 +1,632 @@
+{
+  "$schema": "https://developers.openai.com/plugins/schemas/chatgpt-app-submission.v1.json",
+  "schema_version": 1,
+  "app_info": {
+    "display_name": "Brainbase MCP",
+    "subtitle": "Build and operate AI agents",
+    "description": "Brainbase MCP lets users create, inspect, update, test, deploy, and monitor managed AI agents from ChatGPT and Codex. It supports revision-safe agent changes, registry skills and MCP server configuration, evaluations, orchestrations, schedules, and task runs, with explicit confirmation for destructive actions and OAuth-based access to the user's Brainbase workspace.",
+    "category": "DEVELOPER_TOOLS"
+  },
+  "tools": {
+    "orgs_list": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only lists Brainbase organizations available to the signed-in user.",
+        "open_world_justification": "Reads private Brainbase account data without reaching public or third-party systems.",
+        "destructive_justification": "Does not create, update, remove, or interrupt any resource."
+      }
+    },
+    "teams_list": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only lists teams in the selected Brainbase organization.",
+        "open_world_justification": "Reads private Brainbase workspace data without reaching public or third-party systems.",
+        "destructive_justification": "Does not create, update, remove, or interrupt any resource."
+      }
+    },
+    "agents_list": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only retrieves managed agents the signed-in user can access.",
+        "open_world_justification": "Reads private Brainbase workspace data without reaching public or third-party systems.",
+        "destructive_justification": "Does not change agent configuration or state."
+      }
+    },
+    "agents_create": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Creates a managed agent in the user's private Brainbase workspace.",
+        "open_world_justification": "The created agent remains inside Brainbase and is not published to a public or third-party system.",
+        "destructive_justification": "Adds a new agent without deleting or removing existing resources."
+      }
+    },
+    "agents_get": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only retrieves the selected agent and its current revision-safe configuration.",
+        "open_world_justification": "Reads private Brainbase workspace data without reaching public or third-party systems.",
+        "destructive_justification": "Does not change agent configuration or state."
+      }
+    },
+    "agents_update": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Updates explicitly selected fields on a private Brainbase agent after checking its current revision.",
+        "open_world_justification": "Changes only the user's private Brainbase agent configuration.",
+        "destructive_justification": "Can overwrite selected agent configuration fields, so it requires a fresh revision and explicit requested values."
+      }
+    },
+    "agents_delete": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Deletes the selected managed agent after validating its latest revision.",
+        "open_world_justification": "The deletion is limited to the user's private Brainbase workspace.",
+        "destructive_justification": "Permanently deletes an agent and requires the exact agent title as confirmation."
+      }
+    },
+    "instructions_update": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Replaces the selected agent's instructions after checking its current revision.",
+        "open_world_justification": "Changes only the user's private Brainbase agent configuration.",
+        "destructive_justification": "Replaces the agent's existing instructions, so it requires a fresh revision and an explicit replacement."
+      }
+    },
+    "agents_get_revision": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only retrieves the opaque revision for the selected agent.",
+        "open_world_justification": "Reads private Brainbase workspace state without reaching public or third-party systems.",
+        "destructive_justification": "Does not change agent configuration or state."
+      }
+    },
+    "templates_search": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only searches published templates and returns matching metadata.",
+        "open_world_justification": "Queries Brainbase's shared registry service outside the user's private agent workspace.",
+        "destructive_justification": "Does not publish, install, update, or remove a template."
+      }
+    },
+    "templates_get": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only retrieves and resolves the selected published template.",
+        "open_world_justification": "Reads from Brainbase's shared registry service outside the user's private agent workspace.",
+        "destructive_justification": "Does not publish, install, update, or remove a template."
+      }
+    },
+    "skills_search": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only searches published registry skills and returns matching metadata.",
+        "open_world_justification": "Queries Brainbase's shared registry service outside the user's private agent workspace.",
+        "destructive_justification": "Does not publish, attach, update, or remove a skill."
+      }
+    },
+    "skills_get": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only retrieves metadata for the selected published registry skill.",
+        "open_world_justification": "Reads from Brainbase's shared registry service outside the user's private agent workspace.",
+        "destructive_justification": "Does not publish, attach, update, or remove a skill."
+      }
+    },
+    "skills_attach": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Attaches a validated registry skill to the selected agent after checking its current revision.",
+        "open_world_justification": "Changes only private Brainbase agent configuration and does not publish the skill.",
+        "destructive_justification": "Can replace the version or configuration of an existing skill attachment while preserving unrelated components."
+      }
+    },
+    "skills_detach": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Removes the selected registry skill attachment from a private Brainbase agent.",
+        "open_world_justification": "Changes only private Brainbase agent configuration.",
+        "destructive_justification": "Removes an existing skill attachment after checking the agent's current revision."
+      }
+    },
+    "mcp_servers_list": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only lists the selected agent's MCP server configuration with credential values withheld.",
+        "open_world_justification": "Reads private Brainbase agent configuration without contacting the configured servers.",
+        "destructive_justification": "Does not change or remove any MCP server configuration."
+      }
+    },
+    "mcp_servers_upsert": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Adds or updates one named MCP server on the selected agent after checking its current revision.",
+        "open_world_justification": "Only stores private agent configuration and does not contact the configured server.",
+        "destructive_justification": "Can overwrite an existing named MCP server configuration while preserving hidden credentials and unrelated entries."
+      }
+    },
+    "mcp_servers_remove": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Removes one named MCP server configuration from the selected agent.",
+        "open_world_justification": "Changes only private Brainbase agent configuration.",
+        "destructive_justification": "Deletes an existing MCP server attachment after checking the agent's current revision."
+      }
+    },
+    "playbooks_list": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only retrieves playbooks and the current manifest revision for the selected agent.",
+        "open_world_justification": "Reads private Brainbase agent configuration without reaching public or third-party systems.",
+        "destructive_justification": "Does not add, update, archive, or remove a playbook."
+      }
+    },
+    "playbooks_upsert": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Creates or updates one playbook in the selected agent's private manifest.",
+        "open_world_justification": "Changes only private Brainbase agent configuration.",
+        "destructive_justification": "Can replace an existing playbook's content while preserving unrelated manifest components."
+      }
+    },
+    "playbooks_archive": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Archives the selected playbook from the agent's manifest.",
+        "open_world_justification": "Changes only private Brainbase agent configuration.",
+        "destructive_justification": "Removes a playbook and requires its exact title plus the current manifest revision."
+      }
+    },
+    "evals_list": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only lists eval definitions for the selected Brainbase agent.",
+        "open_world_justification": "Reads private Brainbase workspace data without reaching public or third-party systems.",
+        "destructive_justification": "Does not create, update, run, or delete an eval."
+      }
+    },
+    "evals_create": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Creates an eval definition for the selected private Brainbase agent.",
+        "open_world_justification": "Stores the eval inside the user's Brainbase workspace without running an agent.",
+        "destructive_justification": "Adds a new eval definition without deleting or replacing another eval."
+      }
+    },
+    "evals_get": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only retrieves the selected eval definition and its opaque revision.",
+        "open_world_justification": "Reads private Brainbase workspace data without reaching public or third-party systems.",
+        "destructive_justification": "Does not update, run, or delete the eval."
+      }
+    },
+    "evals_update": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Updates explicitly selected fields on an eval after checking its current revision.",
+        "open_world_justification": "Changes only a private Brainbase eval definition and does not run an agent.",
+        "destructive_justification": "Can overwrite the selected eval definition while preserving its historical results."
+      }
+    },
+    "evals_delete": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Deletes the selected eval definition after validating its latest revision.",
+        "open_world_justification": "The deletion is limited to the user's private Brainbase workspace.",
+        "destructive_justification": "Permanently deletes an eval and requires the exact eval slug as confirmation."
+      }
+    },
+    "evals_run": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Starts a billable agent task and evaluates its completed turn against the selected enabled eval.",
+        "open_world_justification": "Runs a configured agent that may use connected tools or external services.",
+        "destructive_justification": "Starts billable agent work that may invoke external tools and cannot be fully undone after execution begins."
+      }
+    },
+    "evals_results": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only retrieves stored eval run results for the selected agent.",
+        "open_world_justification": "Reads private Brainbase result data without reaching public or third-party systems.",
+        "destructive_justification": "Does not run, update, or delete an eval."
+      }
+    },
+    "orchestrations_list": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only lists orchestrations in the selected private Brainbase group.",
+        "open_world_justification": "Reads private Brainbase workspace data without reaching public or third-party systems.",
+        "destructive_justification": "Does not create, update, run, or delete an orchestration."
+      }
+    },
+    "orchestrations_create": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Creates an orchestration in the selected private Brainbase group.",
+        "open_world_justification": "Stores the orchestration inside Brainbase without running agents or publishing externally.",
+        "destructive_justification": "Adds a new orchestration without deleting or replacing an existing one."
+      }
+    },
+    "orchestrations_get": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only retrieves the selected orchestration, graph, schedules, and current revision.",
+        "open_world_justification": "Reads private Brainbase workspace data without reaching public or third-party systems.",
+        "destructive_justification": "Does not update, run, or delete the orchestration."
+      }
+    },
+    "orchestrations_update": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Updates selected orchestration metadata after checking its current revision.",
+        "open_world_justification": "Changes only a private Brainbase orchestration and does not run its agents.",
+        "destructive_justification": "Can overwrite selected orchestration configuration fields while preserving members, edges, and schedules."
+      }
+    },
+    "orchestrations_delete": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Deletes the selected orchestration after validating its latest revision.",
+        "open_world_justification": "The deletion is limited to the user's private Brainbase workspace.",
+        "destructive_justification": "Permanently deletes an orchestration and requires the exact orchestration name as confirmation."
+      }
+    },
+    "orchestration_members_add": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Adds one existing agent to the selected orchestration after revision validation.",
+        "open_world_justification": "Changes only the private Brainbase orchestration graph and does not run agents.",
+        "destructive_justification": "Adds a member without deleting existing members, edges, or schedules."
+      }
+    },
+    "orchestration_members_remove": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Removes one agent from an orchestration and may remove graph edges that reference it.",
+        "open_world_justification": "Changes only the private Brainbase orchestration graph and does not run agents.",
+        "destructive_justification": "Removes a member and its dependent orchestration or schedule edges, with a dry-run option available first."
+      }
+    },
+    "orchestration_edges_upsert": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Adds or updates one directed edge in the selected orchestration graph.",
+        "open_world_justification": "Changes only the private Brainbase orchestration graph and does not run agents.",
+        "destructive_justification": "Can replace an existing edge's description or payload schema; it supports a dry run and preserves unrelated graph state."
+      }
+    },
+    "orchestration_edges_remove": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Removes one directed edge from the selected orchestration graph.",
+        "open_world_justification": "Changes only the private Brainbase orchestration graph and does not run agents.",
+        "destructive_justification": "Deletes an existing graph edge after revision validation, with a dry-run option available first."
+      }
+    },
+    "schedules_upsert": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Adds or updates one schedule configuration on the selected orchestration.",
+        "open_world_justification": "Stores a private Brainbase schedule and does not execute it during this tool call.",
+        "destructive_justification": "Can overwrite an existing schedule or activate future execution while preserving unrelated orchestration state."
+      }
+    },
+    "schedules_remove": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Removes one schedule configuration from the selected orchestration.",
+        "open_world_justification": "Changes only the private Brainbase orchestration and does not run agents.",
+        "destructive_justification": "Deletes an existing schedule after validating the orchestration's current revision."
+      }
+    },
+    "schedules_test": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Manually tests a persisted schedule and can start billable runs for its target agents.",
+        "open_world_justification": "Runs configured agents that may use connected tools or external services.",
+        "destructive_justification": "Starts billable agent runs that may invoke external tools and cannot be fully undone after dispatch."
+      }
+    },
+    "tasks_create": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Creates a task and can immediately start a billable agent run when auto_run is enabled.",
+        "open_world_justification": "A running agent may use its configured tools or external services.",
+        "destructive_justification": "Can immediately start billable agent work that may invoke external tools and cannot be fully undone."
+      }
+    },
+    "tasks_list": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only lists tasks the signed-in user can access.",
+        "open_world_justification": "Reads private Brainbase task data without reaching public or third-party systems.",
+        "destructive_justification": "Does not create, run, update, interrupt, or delete a task."
+      }
+    },
+    "tasks_get": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only retrieves the selected task and its current status.",
+        "open_world_justification": "Reads private Brainbase task data without reaching public or third-party systems.",
+        "destructive_justification": "Does not update, run, interrupt, or delete the task."
+      }
+    },
+    "tasks_followup": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Adds a user follow-up to an existing task and starts another billable turn when run is enabled.",
+        "open_world_justification": "A running agent may use its configured tools or external services.",
+        "destructive_justification": "Can start another billable agent turn that may invoke external tools and cannot be fully undone."
+      }
+    },
+    "tasks_interrupt": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Interrupts an active Brainbase task and changes its execution state.",
+        "open_world_justification": "The interrupt is issued only within Brainbase and does not itself contact public or third-party systems.",
+        "destructive_justification": "Stops active work and may prevent the current run from completing."
+      }
+    },
+    "tasks_events": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only retrieves normalized events for the selected Brainbase task.",
+        "open_world_justification": "Reads private Brainbase event data without reaching public or third-party systems.",
+        "destructive_justification": "Does not update, run, interrupt, or delete the task."
+      }
+    }
+  },
+  "test_cases": [
+    {
+      "description": "Discover the user's workspace and inspect an existing managed agent without guessing identifiers.",
+      "user_prompt": "List my Brainbase organizations and teams, then show me the agents in the team I select and inspect the agent named Support Triage.",
+      "file_attachment_urls": null,
+      "tools_triggered": "orgs_list, teams_list, agents_list, agents_get",
+      "expected_output": "Returns the available organizations and teams, resolves the selected agent from live results, and summarizes its current configuration and revision without changing it.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Create a default managed agent and verify the persisted result.",
+      "user_prompt": "Create or resolve a Brainbase agent named Directory Creation Test Agent in my selected team with instructions to summarize customer feedback, using an idempotency key so this test is safe to rerun, then read it back and verify the saved configuration.",
+      "file_attachment_urls": null,
+      "tools_triggered": "orgs_list, teams_list, agents_list, agents_create, agents_get",
+      "expected_output": "Creates or resolves one kafka_cloud agent with an idempotency key, reads it back, and reports the saved title, instructions, runtime, and revision without relying on another test.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Update agent instructions with revision safety and verify the change.",
+      "user_prompt": "Inspect the seeded Instruction Update Test Agent, update only its instructions so it groups feedback by theme and cites examples, then read it back to confirm the change.",
+      "file_attachment_urls": null,
+      "tools_triggered": "agents_list, agents_get, instructions_update, agents_get",
+      "expected_output": "Resolves the seeded agent independently, uses its latest opaque revision, changes only the instructions, and verifies the persisted instructions and new revision.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Create and run an enabled eval, then inspect the task and eval results.",
+      "user_prompt": "For the seeded Evaluation Test Agent, create or resolve an enabled eval called concise-feedback, run it with a representative feedback prompt after warning me that the run is billable, and show me the task status and eval result.",
+      "file_attachment_urls": null,
+      "tools_triggered": "agents_list, evals_list, evals_create, evals_run, tasks_get, evals_results",
+      "expected_output": "Resolves the seeded agent independently, creates or resolves the enabled eval, starts one idempotent billable run after disclosure, and returns the resulting task status and eval outcome without exposing internal payloads or credentials.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Create a scheduled orchestration, test it, and inspect resulting task activity.",
+      "user_prompt": "Using the seeded Schedule Test Agent, create or resolve an orchestration named Directory Review Schedule Test for my selected team, add an inactive daily schedule, show me the dry-run impact where supported, warn me that testing is billable, test the saved schedule with a sample payload, and inspect the resulting tasks and events.",
+      "file_attachment_urls": null,
+      "tools_triggered": "orgs_list, teams_list, agents_list, orchestrations_list, orchestrations_create, orchestration_members_add, schedules_upsert, orchestrations_get, schedules_test, tasks_list, tasks_get, tasks_events",
+      "expected_output": "Resolves the seeded agent independently, creates or reuses a revision-safe private orchestration and inactive schedule, tests the persisted schedule after billable-run disclosure, and summarizes the resulting tasks and normalized events.",
+      "expected_output_url": null
+    }
+  ],
+  "negative_test_cases": [
+    {
+      "description": "Do not use MCP tools to collect or store raw credential values.",
+      "user_prompt": "Add a raw bearer token to my Brainbase agent's MCP server headers.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "No Brainbase MCP tool is invoked; the response refuses to accept or expose the secret and directs the user to the appropriate Brainbase credential or integration UI.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Do not invent arbitrary file-management capabilities.",
+      "user_prompt": "Use Brainbase MCP to open every file on my laptop desktop and delete the old screenshots.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "No Brainbase MCP tool is invoked because arbitrary local file access and file deletion are outside the plugin's supported capabilities.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Do not invent legacy workflow tools.",
+      "user_prompt": "Create and publish a legacy Brainbase workflow that posts to Slack every hour.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "No Brainbase MCP tool is invoked; the response explains that legacy workflows are excluded and offers supported orchestration or schedule guidance instead.",
+      "expected_output_url": null
+    }
+  ]
+}
