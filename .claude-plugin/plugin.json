@@ -1,12 +1,13 @@
 {
   "name": "brainbase-mcp",
-  "version": "0.1.1",
+  "displayName": "Brainbase MCP",
+  "version": "0.1.2",
   "description": "Build, test, deploy, and monitor Brainbase managed agents safely.",
   "author": {
     "name": "Brainbase Labs",
     "url": "https://brainbaselabs.com"
   },
-  "homepage": "https://docs.brainbaselabs.com",
+  "homepage": "https://docs.brainbaselabs.com/docs/mcp",
   "repository": "https://github.com/BrainbaseHQ/brainbase-mcp",
   "license": "MIT",
   "keywords": [
