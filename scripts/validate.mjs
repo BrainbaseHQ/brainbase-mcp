@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const REPOSITORY = "https://github.com/BrainbaseHQ/brainbase-mcp";
 const MCP_URL = "https://api.brainbaselabs.com/mcp";
+const HOMEPAGE_URL = "https://docs.brainbaselabs.com/docs/mcp";
 const WEBSITE_URL = "https://brainbaselabs.com";
 const SUPPORT_URL = "https://github.com/BrainbaseHQ/brainbase-mcp/issues";
 const PRIVACY_URL = "https://brainbaselabs.com/privacy";
@@ -116,12 +117,18 @@ assert(
     "git+https://github.com/BrainbaseHQ/brainbase-mcp.git",
   "package repository URL is stale",
 );
+assert(packageJson.homepage === HOMEPAGE_URL, "Package homepage is stale");
 
 for (const manifest of [codexPlugin, claudePlugin]) {
   assert(manifest.name === "brainbase-mcp", "Plugin name mismatch");
   assert(manifest.version === version, "Plugin version mismatch");
   assert(manifest.repository === REPOSITORY, "Plugin repository URL is stale");
+  assert(manifest.homepage === HOMEPAGE_URL, "Plugin homepage is stale");
 }
+assert(
+  claudePlugin.displayName === "Brainbase MCP",
+  "Claude display name is invalid",
+);
 assert(codexPlugin.skills === "./skills/", "Codex skill path mismatch");
 assert(codexPlugin.mcpServers === "./.mcp.json", "Codex MCP path mismatch");
 assert(
@@ -184,6 +191,14 @@ assert(
   claudeMarketplace.plugins[0].source === ".",
   "Claude marketplace must resolve the repository root",
 );
+assert(
+  claudeMarketplace.plugins[0].displayName === "Brainbase MCP",
+  "Claude marketplace display name is invalid",
+);
+assert(
+  claudeMarketplace.plugins[0].homepage === HOMEPAGE_URL,
+  "Claude marketplace homepage is stale",
+);
 
 assert(
   new Set([
@@ -196,6 +211,10 @@ assert(
 );
 assert(brainbaseManifest.version === version, "Unexpected package version");
 assert(brainbaseManifest.repository === REPOSITORY, "Brainbase URL is stale");
+assert(
+  brainbaseManifest.homepage === HOMEPAGE_URL,
+  "Brainbase homepage is stale",
+);
 
 for (const component of brainbaseManifest.components) {
   const componentPath = path.join(ROOT, component.path);
