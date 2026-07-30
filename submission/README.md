@@ -121,13 +121,11 @@ Developers plugin's `chatgpt-app-submission` skill and uses its Apps SDK schema
 contract. Re-run the skill after any MCP tool or listing change, then run
 `node scripts/validate.mjs` before uploading.
 
-## Remaining external steps
+## OpenAI submission status
 
-- Merge the submission package and publish GitHub release `v0.1.1`.
-- Confirm the live OAuth metadata points to the canonical MCP documentation.
-- Obtain the domain challenge token from the portal, configure the production
-  endpoint, and complete **Verify Domain**.
-- Create the reviewer account and disposable fixture described above.
-- Record and host the cross-platform demo.
-- Complete the live tool scan, imported tests, availability, policy
-  attestations, and final portal review.
+The `v0.1.1` package was submitted to OpenAI for review on July 29, 2026.
+Domain verification, reviewer fixtures, the cross-platform demo, the live tool
+scan, imported tests, and policy attestations were completed before submission.
+
+Review and regenerate the OpenAI payload when a future change modifies public
+tool behavior, annotations, listing copy, or submission assets.

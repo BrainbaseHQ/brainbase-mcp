@@ -7,13 +7,14 @@
   "plugins": [
     {
       "name": "brainbase-mcp",
+      "displayName": "Brainbase MCP",
       "description": "Build, test, deploy, and monitor Brainbase managed agents safely.",
       "author": {
         "name": "Brainbase Labs"
       },
       "category": "development",
       "source": ".",
-      "homepage": "https://docs.brainbaselabs.com"
+      "homepage": "https://docs.brainbaselabs.com/docs/mcp"
     }
   ]
 }
