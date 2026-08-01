@@ -564,42 +564,42 @@
   "test_cases": [
     {
       "description": "Discover the user's workspace and inspect an existing managed agent without guessing identifiers.",
-      "user_prompt": "List my Brainbase organizations and teams, then show me the agents in the team I select and inspect the agent named Support Triage.",
+      "user_prompt": "Use Brainbase MCP to list my organizations. In the organization named OpenAI Plugin Review, list teams and select Reviewer Test Team. List that team's agents, find the exact agent named Support Triage, and inspect it with agents_get using the UUID returned by agents_list. Do not modify anything and do not pass a display name where a UUID is required.",
       "file_attachment_urls": null,
       "tools_triggered": "orgs_list, teams_list, agents_list, agents_get",
-      "expected_output": "Returns the available organizations and teams, resolves the selected agent from live results, and summarizes its current configuration and revision without changing it.",
+      "expected_output": "Returns OpenAI Plugin Review and Reviewer Test Team, resolves Support Triage from the live agents_list result, and summarizes its saved configuration and opaque revision without changing it.",
       "expected_output_url": null
     },
     {
       "description": "Create a default managed agent and verify the persisted result.",
-      "user_prompt": "Create or resolve a Brainbase agent named Directory Creation Test Agent in my selected team with instructions to summarize customer feedback, using an idempotency key so this test is safe to rerun, then read it back and verify the saved configuration.",
+      "user_prompt": "Use Brainbase MCP to find Reviewer Test Team inside OpenAI Plugin Review. Call agents_create with that team's UUID, title Directory Creation Test Agent, instructions exactly \"Summarize customer feedback.\", and idempotency_key exactly \"directory-creation-test-agent-reviewer-test-team-v1\". Omit runtime and machine settings so server defaults apply. Then call agents_get with the UUID returned by agents_create and verify the saved title, instructions, runtime, and revision. Do not resolve the agent by title.",
       "file_attachment_urls": null,
-      "tools_triggered": "orgs_list, teams_list, agents_list, agents_create, agents_get",
-      "expected_output": "Creates or resolves one kafka_cloud agent with an idempotency key, reads it back, and reports the saved title, instructions, runtime, and revision without relying on another test.",
+      "tools_triggered": "orgs_list, teams_list, agents_create, agents_get",
+      "expected_output": "Creates or resolves the same kafka_cloud agent through the exact idempotency key, reads the returned UUID back, and reports the saved title, exact instructions, runtime, and revision.",
       "expected_output_url": null
     },
     {
       "description": "Update agent instructions with revision safety and verify the change.",
-      "user_prompt": "Inspect the seeded Instruction Update Test Agent, update only its instructions so it groups feedback by theme and cites examples, then read it back to confirm the change.",
+      "user_prompt": "Use Brainbase MCP to list the agents in OpenAI Plugin Review > Reviewer Test Team and find the exact agent named Instruction Update Test Agent. Inspect it with agents_get using the UUID from agents_list. Then call instructions_update with that UUID, its fresh revision, and the complete instructions exactly \"Group customer feedback by theme and cite one representative example for each theme. Do not invent details.\" Finally call agents_get with the same UUID and verify the exact saved instructions. Do not change any other field.",
       "file_attachment_urls": null,
       "tools_triggered": "agents_list, agents_get, instructions_update, agents_get",
-      "expected_output": "Resolves the seeded agent independently, uses its latest opaque revision, changes only the instructions, and verifies the persisted instructions and new revision.",
+      "expected_output": "Resolves the seeded agent from live results, uses its latest opaque revision, replaces only the instruction text, and verifies the exact persisted instructions. Repeating the test is safe even if those instructions are already present.",
       "expected_output_url": null
     },
     {
-      "description": "Create and run an enabled eval, then inspect the task and eval results.",
-      "user_prompt": "For the seeded Evaluation Test Agent, create or resolve an enabled eval called concise-feedback, run it with a representative feedback prompt after warning me that the run is billable, and show me the task status and eval result.",
+      "description": "Run or resolve an enabled eval, then inspect its task and result.",
+      "user_prompt": "Use Brainbase MCP to find the exact Evaluation Test Agent in OpenAI Plugin Review > Reviewer Test Team. List its evals and select the enabled eval with slug concise-feedback using the returned eval UUID. State that starting a new eval run may consume existing Brainbase credits, then call evals_run with idempotency_key exactly \"concise-feedback-eval-run-20260730-v1\", title \"Concise feedback representative eval\", and prompt \"The launch note is too long and does not identify the customer impact. Give concise feedback.\" Use the task UUID returned by evals_run with tasks_get, then call evals_results for that task.",
       "file_attachment_urls": null,
-      "tools_triggered": "agents_list, evals_list, evals_create, evals_run, tasks_get, evals_results",
-      "expected_output": "Resolves the seeded agent independently, creates or resolves the enabled eval, starts one idempotent billable run after disclosure, and returns the resulting task status and eval outcome without exposing internal payloads or credentials.",
+      "tools_triggered": "agents_list, evals_list, evals_run, tasks_get, evals_results",
+      "expected_output": "Resolves the seeded enabled eval and the same idempotent completed task, reports successful task status and a passed eval result, and exposes no credentials or internal payloads.",
       "expected_output_url": null
     },
     {
-      "description": "Create a scheduled orchestration, test it, and inspect resulting task activity.",
-      "user_prompt": "Using the seeded Schedule Test Agent, create or resolve an orchestration named Directory Review Schedule Test for my selected team, add an inactive daily schedule, show me the dry-run impact where supported, warn me that testing is billable, test the saved schedule with a sample payload, and inspect the resulting tasks and events.",
+      "description": "Inspect a seeded orchestration and its inactive schedule without changing or running it.",
+      "user_prompt": "Use Brainbase MCP to find Reviewer Test Team inside OpenAI Plugin Review. List that team's agents and identify Schedule Test Agent from the returned UUID. List orchestrations with the Reviewer Test Team UUID, select the exact orchestration named Directory Review Schedule Test from the returned result, and inspect it with orchestrations_get using its UUID. Verify that Schedule Test Agent is a member and that the orchestration has one inactive daily schedule. Do not create, update, or test the schedule, and never pass a display name or invented slug where a UUID is required.",
       "file_attachment_urls": null,
-      "tools_triggered": "orgs_list, teams_list, agents_list, orchestrations_list, orchestrations_create, orchestration_members_add, schedules_upsert, orchestrations_get, schedules_test, tasks_list, tasks_get, tasks_events",
-      "expected_output": "Resolves the seeded agent independently, creates or reuses a revision-safe private orchestration and inactive schedule, tests the persisted schedule after billable-run disclosure, and summarizes the resulting tasks and normalized events.",
+      "tools_triggered": "orgs_list, teams_list, agents_list, orchestrations_list, orchestrations_get",
+      "expected_output": "Resolves the seeded orchestration and agent from live list results, confirms the saved member and inactive daily schedule, and makes no changes or billable runs.",
       "expected_output_url": null
     }
   ],

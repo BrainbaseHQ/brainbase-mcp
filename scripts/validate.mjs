@@ -386,16 +386,39 @@ assert(
   openAiSubmission.test_cases[1]?.user_prompt?.includes(
     "Directory Creation Test Agent",
   ) &&
-    openAiSubmission.test_cases[1]?.user_prompt?.includes("idempotency key") &&
+    openAiSubmission.test_cases[1]?.user_prompt?.includes(
+      "directory-creation-test-agent-reviewer-test-team-v1",
+    ) &&
     openAiSubmission.test_cases[2]?.user_prompt?.includes(
       "Instruction Update Test Agent",
     ) &&
     openAiSubmission.test_cases[3]?.user_prompt?.includes(
       "Evaluation Test Agent",
     ) &&
-    openAiSubmission.test_cases[4]?.user_prompt?.includes("Schedule Test Agent"),
+    openAiSubmission.test_cases[3]?.user_prompt?.includes(
+      "concise-feedback-eval-run-20260730-v1",
+    ) &&
+    openAiSubmission.test_cases[4]?.user_prompt?.includes(
+      "Schedule Test Agent",
+    ) &&
+    openAiSubmission.test_cases[4]?.user_prompt?.includes(
+      "Do not create, update, or test the schedule",
+    ),
   "OpenAI positive tests must use their independent reviewer fixtures",
 );
+const expectedTestTools = [
+  "orgs_list, teams_list, agents_list, agents_get",
+  "orgs_list, teams_list, agents_create, agents_get",
+  "agents_list, agents_get, instructions_update, agents_get",
+  "agents_list, evals_list, evals_run, tasks_get, evals_results",
+  "orgs_list, teams_list, agents_list, orchestrations_list, orchestrations_get",
+];
+for (const [index, expected] of expectedTestTools.entries()) {
+  assert(
+    openAiSubmission.test_cases[index]?.tools_triggered === expected,
+    `OpenAI positive test ${index + 1} has a stale tool sequence`,
+  );
+}
 for (const testCase of openAiSubmission.test_cases) {
   const tools = (testCase.tools_triggered ?? "")
     .split(",")
