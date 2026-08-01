@@ -587,11 +587,11 @@
       "expected_output_url": null
     },
     {
-      "description": "Run or resolve an enabled eval, then inspect its task and result.",
-      "user_prompt": "Use Brainbase MCP to find the exact Evaluation Test Agent in OpenAI Plugin Review > Reviewer Test Team. List its evals and select the enabled eval with slug concise-feedback using the returned eval UUID. State that starting a new eval run may consume existing Brainbase credits, then call evals_run with idempotency_key exactly \"concise-feedback-eval-run-20260730-v1\", title \"Concise feedback representative eval\", and prompt \"The launch note is too long and does not identify the customer impact. Give concise feedback.\" Use the task UUID returned by evals_run with tasks_get, then call evals_results for that task.",
+      "description": "Inspect a completed eval task and its result without starting a new run.",
+      "user_prompt": "Use Brainbase MCP to list my agents without a group filter and find the exact Evaluation Test Agent. List its evals and confirm that concise-feedback is enabled. List tasks for the Evaluation Test Agent, select the completed task titled Concise feedback representative eval from the returned result, inspect it with tasks_get using its UUID, and call evals_results for that task. Do not start a new eval or task, and do not guess any UUID.",
       "file_attachment_urls": null,
-      "tools_triggered": "agents_list, evals_list, evals_run, tasks_get, evals_results",
-      "expected_output": "Resolves the seeded enabled eval and the same idempotent completed task, reports successful task status and a passed eval result, and exposes no credentials or internal payloads.",
+      "tools_triggered": "agents_list, evals_list, tasks_list, tasks_get, evals_results",
+      "expected_output": "Resolves the seeded enabled eval and completed representative task from live list results, reports successful task status and a passed eval result, exposes no credentials or internal payloads, and starts no billable run.",
       "expected_output_url": null
     },
     {

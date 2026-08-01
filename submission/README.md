@@ -80,7 +80,7 @@ disposable organization and team containing these exact independent fixtures:
 
 - `Support Triage`, for the read-only discovery test
 - `Instruction Update Test Agent`, for the revision-safe instruction test
-- `Evaluation Test Agent`, for the idempotent eval run test
+- `Evaluation Test Agent`, for the read-only eval result test
 - `Schedule Test Agent`, for the read-only orchestration and schedule test
 - one enabled eval, one orchestration with an inactive schedule, one playbook,
   and representative task history for the demo
@@ -88,9 +88,10 @@ disposable organization and team containing these exact independent fixtures:
 The creation test owns `Directory Creation Test Agent` and must use an
 idempotency key of
 `directory-creation-test-agent-reviewer-test-team-v1` so reruns resolve the same
-resource. The eval test uses the seeded `concise-feedback` eval and the stable
-task key `concise-feedback-eval-run-20260730-v1`. The orchestration test is
-read-only and inspects the seeded `Directory Review Schedule Test` schedule.
+resource. The eval test inspects the seeded `concise-feedback` definition and
+completed `Concise feedback representative eval` task without starting a run.
+The orchestration test is read-only and inspects the seeded
+`Directory Review Schedule Test` schedule.
 Keep fixture metadata string-valued so it matches the public agent contract. Do
 not make any test depend on another test having run first. Store credentials
 only in the submission portal, never in this repository.
@@ -137,6 +138,6 @@ traffic showed two deterministic causes:
   and invented slugs for required UUIDs.
 
 The reviewer fixture and submission tests now use string-valued metadata,
-exact idempotency keys, IDs returned by list/create calls, and a read-only
-orchestration inspection. Re-run all five positive and three negative tests in
-Developer Mode before resubmitting.
+exact idempotency keys, IDs returned by list/create calls, and read-only eval
+and orchestration inspections. Re-run all five positive and three negative
+tests in Developer Mode before resubmitting.

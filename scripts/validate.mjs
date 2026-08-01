@@ -396,7 +396,7 @@ assert(
       "Evaluation Test Agent",
     ) &&
     openAiSubmission.test_cases[3]?.user_prompt?.includes(
-      "concise-feedback-eval-run-20260730-v1",
+      "Do not start a new eval or task",
     ) &&
     openAiSubmission.test_cases[4]?.user_prompt?.includes(
       "Schedule Test Agent",
@@ -410,7 +410,7 @@ const expectedTestTools = [
   "orgs_list, teams_list, agents_list, agents_get",
   "orgs_list, teams_list, agents_create, agents_get",
   "agents_list, agents_get, instructions_update, agents_get",
-  "agents_list, evals_list, evals_run, tasks_get, evals_results",
+  "agents_list, evals_list, tasks_list, tasks_get, evals_results",
   "orgs_list, teams_list, agents_list, orchestrations_list, orchestrations_get",
 ];
 for (const [index, expected] of expectedTestTools.entries()) {
